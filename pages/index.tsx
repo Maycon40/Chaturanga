@@ -3,49 +3,68 @@ import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
-  const [state, setState] = useState({
-    value: null
-  })
   const [xIsNext, setXIsNext] = useState(true)
   const [tabela, setTabela] = useState([
-    Array(3).fill(''),
-    Array(3).fill(''),
-    Array(3).fill('')
+    Array(3).fill(""),
+    Array(3).fill(""),
+    Array(3).fill("")
   ])
 
   function calculateWinner(squares: any) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      for(let j = 0; j < lines[i].length; j++) {
-        const a = lines[0][j];
-        if(squares[0][a]){
-          return true
-        }
-      }
+    // Horizontal
+
+    if(squares[0][0] === squares[0][1] && squares[0][1] === squares[0][2] && squares[0][2] !== ""){
+      return squares[0][0];
     }
-    return null
+    if(squares[1][0] === squares[1][1] && squares[1][1] === squares[1][2] && squares[1][2] !== ""){
+      return squares[1][0];
+    }
+    if(squares[2][0] === squares[2][1] && squares[2][1] === squares[2][2] && squares[2][2] !== ""){
+      return squares[2][0];
+    }
+
+    // Vertical
+
+    if(squares[0][0] === squares[1][0] && squares[1][0] === squares[2][0] && squares[2][0] !== ""){
+      return squares[0][0];
+    }
+    if(squares[0][1] === squares[1][1] && squares[1][1] === squares[2][1] && squares[2][1] !== ""){
+      return squares[0][1];
+    }
+    if(squares[0][2] === squares[1][2] && squares[1][2] === squares[2][2] && squares[2][2] !== ""){
+      return squares[0][2];
+    }
+
+    // Diagonal
+
+
+    if(squares[0][0] === squares[1][1] && squares[1][1] === squares[2][2] && squares[2][2] !== ""){
+      return squares[0][0];
+    }
+    if(squares[2][0] === squares[1][1] && squares[1][1] === squares[0][2] && squares[0][2] !== ""){
+      return squares[2][0];
+    }
+
+    return false;
   }
 
-  //calculateWinner(tabela)
-
   const handleClick = (index1: number, index2: number) => {
-    tabela[index1][index2] = xIsNext ? "X" : "O"
-    setXIsNext(state => !state)
-    setTabela([...tabela])
+    if(tabela[index1][index2] === "" && !calculateWinner(tabela)){
+      tabela[index1][index2] = xIsNext ? "X" : "O"
+      setXIsNext(state => !state)
+      setTabela([...tabela])
+    }
   }
 
   return (
     <div className={styles.container}>
-      <div>Next player: {xIsNext ? "X" : "O"}</div>
+      {calculateWinner(tabela) && calculateWinner(tabela) !== "" ?
+        <div>
+          Winner player: {xIsNext ? "O" : "X"}
+        </div>
+        :
+        <div>Next player: {xIsNext ? "X" : "O"}</div>
+      }
       <table>
         <tbody>
           {tabela.map((item1, index1) =>
